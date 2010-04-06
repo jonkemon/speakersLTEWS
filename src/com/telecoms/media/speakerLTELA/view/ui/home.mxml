@@ -24,6 +24,9 @@
 		public var model:speakerModelLocator = speakerModelLocator.getInstance();		
 		public var cw:ChangeWatcher = ChangeWatcher.watch(model, "speakerList", init);
 		
+		[Embed(systemFont='Arial',fontName='mainFont1',mimeType='application/x-font')]
+		private var mainFontVar1:Class;
+		
 		// Load Image data
 		public function loadXML():void
 		{
@@ -34,10 +37,19 @@
 		
 		private function init(event:Event):void
 		{
+			//Set whether there is an intro or not
+			model.intro = true;
+			//end
+			
 			cw.unwatch();
 			speakerPic.source = model.speakerList.speaker[0].imgurl;
+			if(model.intro){
+				introAnimation(event);
+			}
+			else{
 			customAnimation.play();
 			customAnimation.addEventListener(EffectEvent.EFFECT_END, moveToCenter);
+			}
 		}
 				
 		private function moveToCenter(event:Event):void
@@ -51,8 +63,22 @@
 			
 			speakerPic.source = model.speakerList.speaker[model.spkNum].imgurl;
 		}
+		
+		private function introAnimation(event:Event):void
+		{
+			customAnimationIntro.addEventListener(EffectEvent.EFFECT_END, moveToCenter);
+			customAnimationIntro.play();
+			
+			speakerPic.source = model.speakerList.speaker[model.spkNum].imgurl;
+		}
 	]]>
 </mx:Script>
+	<mx:Style>
+		.myFont1{
+			fontFamily:mainFont1;
+			fontSize:12pt;
+		}		
+	</mx:Style>
 
 	<mx:Sequence id="customAnimation" target="{speakerContainer}">
 		<mx:AnimateProperty id="moveRight" property="x" toValue="15" duration="2000"/>
@@ -61,6 +87,18 @@
 		<mx:AnimateProperty id="moveBackToStartX" property="x" fromValue="15" toValue="-300" duration="0"/>
 		<mx:AnimateProperty id="moveBackToStartY" property="y" fromValue="100" toValue="10" duration="0"/>	
 	</mx:Sequence>
+	
+	<mx:Sequence id="customAnimationIntro" target="{introText}">
+		<mx:Dissolve id="dissolveIntro" duration="2000"/>
+		<mx:Pause id="pauseIntro" duration="2000"/>
+		<mx:Fade alphaTo="0.0" duration="2000"/>
+		<!--<mx:Zoom duration="250" zoomHeightTo="0" zoomWidthTo="0"/>-->
+	</mx:Sequence>
+	
+	<mx:VBox id="introText" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" verticalGap="0">
+		<mx:Label styleName="myFont1" text="125 Speakers... 45 Operator Case Studies..." />
+		<mx:Label styleName="myFont1" text="Exclusive Industry Keynotes from..." />
+	</mx:VBox>
 
 	<mx:HBox id="speakerContainer" y="10" x="-300" horizontalScrollPolicy="off" verticalScrollPolicy="off">
 		<mx:VBox paddingTop="7" paddingRight="10" verticalGap="0" width="215">

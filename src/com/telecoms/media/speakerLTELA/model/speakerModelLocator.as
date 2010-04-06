@@ -7,6 +7,7 @@ package com.telecoms.media.speakerLTELA.model
 		static public var __instance:speakerModelLocator=null;
 		public var speakerList:XML = new XML;
 		public var spkNum:int = 0;
+		public var intro:Boolean = false;
 		static public function getInstance():speakerModelLocator
 		{
 			if(__instance == null)
